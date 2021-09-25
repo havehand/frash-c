@@ -1,28 +1,55 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <transition :name="transitionName" :mode="this.$router.back?'out-in': 'in-out'">
+      <router-view class="view"></router-view>
+    </transition>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  created() {
+    const counterMap = JSON.parse(localStorage.getItem('goods')) || {};
+    this.$store.commit('setCounterMap', counterMap);
+  },
+  data(){
+    return{
+      transitionName: 'left'
+    }
+  },
+  watch:{
+    $route(to, from){
+      if (to.name === 'Classify' && from.name === 'Search'){
+        this.$router.back = true;
+      }
+      if (this.$router.back){
+        this.transitionName = 'right';
+      }else {
+        this.transitionName = 'left';
+      }
+      this.$router.back = false;
+    }
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style scoped lang="less">
+  #app{
+    z-index: 10;
+  }
+  .view{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    transition: transform 0.3s linear;
+  }
+  .left-enter{
+    transform: translate(100%, 0);
+  }
+  .right-leave-to{
+    transform: translate(100%, 0);
+  }
 </style>
