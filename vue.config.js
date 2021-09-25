@@ -12,5 +12,5 @@ module.exports = {
             }
         }
     },
-    publicPath: "./"
+    publicPath: "/frash-c/dist/"
 }
